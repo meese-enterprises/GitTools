@@ -4,16 +4,16 @@
 
 # GitTools
 
-This repository contains three small python/bash scripts used for the Git research. [Read about it here](https://en.internetwache.org/dont-publicly-expose-git-or-how-we-downloaded-your-websites-sourcecode-an-analysis-of-alexas-1m-28-07-2015/)
+This repository contains three small python/bash scripts used for the Git research. [Read about it here](https://en.internetwache.org/dont-publicly-expose-git-or-how-we-downloaded-your-websites-sourcecode-an-analysis-of-alexas-1m-28-07-2015/).
 
 ## Finder
 
-You can use this tool to find websites with their .git repository available to the public
+You can use this tool to find websites with their `.git` repository available to the public.
 
 ### Usage
 
-This python script identifies websites with publicly accessible ```.git``` repositories.
-It checks if the ```.git/HEAD``` file contains ```refs/heads```.
+This python script identifies websites with publicly accessible `.git` repositories.
+It checks if the `.git/HEAD` file contains `refs/heads`.
 
 ```sh
 $ ./gitfinder.py -h
@@ -65,8 +65,7 @@ $ ./gitdumper.sh -h
 
 ```
 
-Note: This tool has no 100% guaranty to completely recover the .git repository. Especially if the repository has been compressed into ```pack```-files, it may fail.
-
+> **Note:** This tool has no 100% guarantee to completely recover the `.git` repository. Especially if the repository has been compressed into `pack`-files, it may fail.
 
 ## Extractor
 
@@ -83,11 +82,13 @@ This script tries to recover incomplete git repositories:
 ```sh
 $ ./extractor.sh /tmp/mygitrepo /tmp/mygitrepodump
 ```
-where
-- ```/tmp/mygitrepo``` contains a ```.git``` directory
-- ```/tmp/mygitrepodump``` is the destination directory
 
-This can be used in combination with the ```Git Dumper``` in case the downloaded repository is incomplete.
+Where:
+
+- `/tmp/mygitrepo` contains a `.git` directory
+- `/tmp/mygitrepodump` is the destination directory
+
+This can be used in combination with the `Git Dumper` in case the downloaded repository is incomplete.
 
 
 ## Demo
@@ -100,7 +101,7 @@ Here's a small demo of the **Dumper** tool:
 
 The `urllib` and `curl` should support proxy configuration through environment variables:
 
-In bash, set:
+In Bash, set:
 
 ```sh
 export HTTP_PROXY=http://proxy_url:proxy_port

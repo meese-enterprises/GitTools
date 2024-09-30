@@ -1,10 +1,11 @@
 #!/bin/bash
 #$1 : Folder containing .git directory to scan
 #$2 : Folder to put files to
+
 function init_header() {
     cat <<EOF
 ###########
-# Extractor is part of https://github.com/internetwache/GitTools
+# Extractor is part of https://github.com/meese-enterprises/GitTools
 #
 # Developed and maintained by @gehaxelt from @internetwache
 #
@@ -77,7 +78,7 @@ function traverse_commit() {
 	traverse_tree $commit $path
 }
 
-# Current directory as we'll switch into others and need to restore it.
+# Current directory, as we'll switch into others and need to restore it
 OLDDIR=$(pwd)
 TARGETDIR=$2
 COMMITCOUNT=0;
@@ -97,7 +98,7 @@ find ".git/objects" -type f |
 
 	type=$(git cat-file -t $object)
 
-    # Only analyse commit objects
+    # Only analyze commit objects
 	if [ "$type" = "commit" ]; then
 		CURDIR=$(pwd)
 		traverse_commit "$TARGETDIR" $object $COMMITCOUNT

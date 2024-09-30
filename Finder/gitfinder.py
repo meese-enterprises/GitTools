@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Finder is part of https://github.com/internetwache/GitTools
+Finder is part of https://github.com/meese-enterprises/GitTools
 
 Developed and maintained by @gehaxelt from @internetwache
 
@@ -57,7 +57,7 @@ def read_file(filename):
 def main():
     print("""
 ###########
-# Finder is part of https://github.com/internetwache/GitTools
+# Finder is part of https://github.com/meese-enterprises/GitTools
 #
 # Developed and maintained by @gehaxelt from @internetwache
 #
