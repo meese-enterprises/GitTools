@@ -1,6 +1,6 @@
  [![GitHub stars](https://img.shields.io/github/stars/internetwache/GitTools.svg)](https://github.com/internetwache/GitTools/stargazers)
  [![GitHub license](https://img.shields.io/github/license/internetwache/GitTools.svg)](https://github.com/internetwache/GitTools/blob/master/LICENSE.md)
- 
+
 
 # GitTools
 
@@ -15,7 +15,7 @@ You can use this tool to find websites with their .git repository available to t
 This python script identifies websites with publicly accessible ```.git``` repositories.
 It checks if the ```.git/HEAD``` file contains ```refs/heads```.
 
-```
+```sh
 $ ./gitfinder.py -h
 
 ###########
@@ -44,7 +44,7 @@ The script will output discovered domains in the form of ```[*] Found: DOMAIN```
 
 #### Scanning Alexa’s Top 1M
 
-```
+```sh
 wget http://s3.amazonaws.com/alexa-static/top-1m.csv.zip
 unzip top-1m.csv.zip
 sed -i.bak 's/.*,//' top-1m.csv
@@ -57,7 +57,7 @@ This tool can be used to download as much as possible from the found .git reposi
 
 ### Usage
 
-```
+```sh
 $ ./gitdumper.sh -h
 
 [*] USAGE: http://target.tld/.git/ dest-dir [--git-dir=otherdir]
@@ -80,7 +80,7 @@ This script tries to recover incomplete git repositories:
 
 ### Usage
 
-```
+```sh
 $ ./extractor.sh /tmp/mygitrepo /tmp/mygitrepodump
 ```
 where
@@ -102,21 +102,21 @@ The `urllib` and `curl` should support proxy configuration through environment v
 
 In bash, set:
 
-```
+```sh
 export HTTP_PROXY=http://proxy_url:proxy_port
 export HTTPS_PROXY=http://proxy_url:proxy_port
 ```
 
-In Window's CMD, use:
+In Windows CMD, use:
 
-```
+```sh
 set HTTP_PROXY=http://proxy_url:proxy_port
 set HTTPS_PROXY=http://proxy_url:proxy_port
 ```
 
 Basic auth should be supported with:
 
-```
+```sh
 http://username:password@proxy_url:proxy_port
 ```
 

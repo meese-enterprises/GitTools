@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Finder is part of https://github.com/internetwache/GitTools
 
 Developed and maintained by @gehaxelt from @internetwache
 
 Use at your own risk. Usage might be illegal in certain circumstances.
 Only for educational purposes!
-'''
+"""
 
 import argparse
 from functools import partial
@@ -23,8 +23,8 @@ def findgitrepo(output_file, domains):
 
     try:
         # Try to download http://target.tld/.git/HEAD
-        with urlopen(''.join(['http://', domain, '/.git/HEAD']), context=ssl._create_unverified_context(), timeout=5) as response:
-            answer = response.read(200).decode('utf-8', 'ignore')
+        with urlopen("".join(["http://", domain, "/.git/HEAD"]), context=ssl._create_unverified_context(), timeout=5) as response:
+            answer = response.read(200).decode("utf-8", "ignore")
 
     except HTTPError:
         return
@@ -40,14 +40,14 @@ def findgitrepo(output_file, domains):
         raise
 
     # Check if refs/heads is in the file
-    if 'refs/heads' not in answer:
+    if "refs/heads" not in answer:
         return
 
     # Write match to output_file
-    with open(output_file, 'a') as file_handle:
-        file_handle.write(''.join([domain, '\n']))
+    with open(output_file, "a") as file_handle:
+        file_handle.write("".join([domain, "\n"]))
 
-    print(''.join(['[*] Found: ', domain]))
+    print("".join(["[*] Found: ", domain]))
 
 
 def read_file(filename):
@@ -68,9 +68,9 @@ def main():
 
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--inputfile', default='input.txt', help='input file')
-    parser.add_argument('-o', '--outputfile', default='output.txt', help='output file')
-    parser.add_argument('-t', '--threads', default=200, help='threads')
+    parser.add_argument("-i", "--inputfile", default="input.txt", help="input file")
+    parser.add_argument("-o", "--outputfile", default="output.txt", help="output file")
+    parser.add_argument("-t", "--threads", default=200, help="threads")
     args = parser.parse_args()
 
     domain_file = args.inputfile
@@ -91,5 +91,5 @@ def main():
         pool.map(fun, domains)
     print("Finished")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

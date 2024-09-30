@@ -9,7 +9,7 @@ function init_header() {
 #
 # Developed and maintained by @gehaxelt from @internetwache
 #
-# Use at your own risk. Usage might be illegal in certain circumstances. 
+# Use at your own risk. Usage might be illegal in certain circumstances.
 # Only for educational purposes!
 ###########
 
@@ -64,7 +64,7 @@ fi
 
 
 function start_download() {
-    #Add initial/static git files
+    # Add initial/static git files
     QUEUE+=('HEAD')
     QUEUE+=('objects/info/packs')
     QUEUE+=('description')
@@ -87,11 +87,11 @@ function start_download() {
     QUEUE+=('/refs/wip/wtree/refs/heads/master')
     QUEUE+=('/refs/wip/wtree/refs/heads/main')
 
-    #Iterate through QUEUE until there are no more files to download
+    # Iterate through QUEUE until there are no more files to download
     while [ ${#QUEUE[*]} -gt 0 ]
     do
         download_item ${QUEUE[@]:0:1}
-        #Remove item from QUEUE
+        # Remove item from QUEUE
         QUEUE=( "${QUEUE[@]:1}" )
     done
 }
@@ -102,22 +102,22 @@ function download_item() {
     local hashes=()
     local packs=()
 
-    #Check if file has already been downloaded
+    # Check if file has already been downloaded
     if [[ " ${DOWNLOADED[@]} " =~ " ${objname} " ]]; then
         return
     fi
 
     local target="$BASEGITDIR$objname"
 
-    #Create folder
+    # Create folder
     if dir=$(echo "$objname" | grep -oE "^(.*)/"); then
         mkdir -p "$BASEGITDIR/$dir"
     fi
 
-    #Download file
+    # Download file
     curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36" -f -k -s "$url" -o "$target"
-    
-    #Mark as downloaded and remove it from the queue
+
+    # Mark as downloaded and remove it from the queue
     DOWNLOADED+=("$objname")
     if [ ! -f "$target" ]; then
         echo -e "\033[31m[-] Downloaded: $objname\033[0m"
@@ -125,24 +125,24 @@ function download_item() {
     fi
     echo -e "\033[32m[+] Downloaded: $objname\033[0m"
 
-    #Check if we have an object hash
-    if [[ "$objname" =~ /[a-f0-9]{2}/[a-f0-9]{38} ]]; then 
-        #Switch into $BASEDIR and save current working directory
+    # Check if we have an object hash
+    if [[ "$objname" =~ /[a-f0-9]{2}/[a-f0-9]{38} ]]; then
+        # Switch into $BASEDIR and save current working directory
         cwd=$(pwd)
         cd "$BASEDIR"
-        
-        #Restore hash from $objectname
+
+        # Restore hash from $objectname
         hash=$(echo "$objname" | sed -e 's~objects~~g' | sed -e 's~/~~g')
-        
-        #Check if it's valid git object
+
+        # Check if it's valid git object
         if ! type=$(git cat-file -t "$hash" 2> /dev/null); then
-            #Delete invalid file
+            # Delete invalid file
             cd "$cwd"
             rm "$target"
-            return 
+            return
         fi
-        
-        #Parse output of git cat-file -p $hash. Use strings for blobs
+
+        # Parse output of git cat-file -p $hash. Use strings for blobs
         if [[ "$type" != "blob" ]]; then
             hashes+=($(git cat-file -p "$hash" | grep -oE "([a-f0-9]{40})"))
         else
@@ -150,19 +150,19 @@ function download_item() {
         fi
 
         cd "$cwd"
-    fi 
-    
-    #Parse file for other objects
+    fi
+
+    # Parse file for other objects
     hashes+=($(cat "$target" | strings -a | grep -oE "([a-f0-9]{40})"))
     for hash in ${hashes[*]}
     do
         QUEUE+=("objects/${hash:0:2}/${hash:2}")
     done
 
-    #Parse file for packs
+    # Parse file for packs
     packs+=($(cat "$target" | strings -a | grep -oE "(pack\-[a-f0-9]{40})"))
     for pack in ${packs[*]}
-    do 
+    do
         QUEUE+=("objects/pack/$pack.pack")
         QUEUE+=("objects/pack/$pack.idx")
     done
