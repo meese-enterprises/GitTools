@@ -1,6 +1,6 @@
 #!/bin/bash
 #$1 : URL to download .git from (http://target.com/.git/)
-#$2 : Folder where the .git-directory will be created
+#$2 : Folder where the .git-directory will be created (optional)
 # Optional:
 # --user-agent="CustomUserAgent"
 
@@ -62,7 +62,7 @@ while [[ $# -gt 0 ]]; do
             BASEDIR="$1"
         else
             echo -e "\033[31m[-] Unknown argument: $1\033[0m"
-            echo -e "\033[33m[*] USAGE: http://target.tld/.git/ dest-dir [--git-dir=otherdir] [--user-agent=\"CustomUserAgent\"]\033[0m"
+            echo -e "\033[33m[*] USAGE: http://target.tld/.git/ [dest-dir] [--git-dir=otherdir] [--user-agent=\"CustomUserAgent\"]\033[0m"
             exit 1
         fi
         shift # past argument
@@ -70,11 +70,19 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Extract domain name from BASEURL
+DOMAIN=$(echo "$BASEURL" | awk -F[/:] '{print $4}')
+
+# Set default BASEDIR if not provided
+if [[ -z "$BASEDIR" ]]; then
+    BASEDIR="data/$DOMAIN"
+fi
+
 GITDIR=$(get_git_dir "$@")
 BASEGITDIR="$BASEDIR/$GITDIR/"
 
-if [ -z "$BASEURL" ] || [ -z "$BASEDIR" ]; then
-    echo -e "\033[33m[*] USAGE: http://target.tld/.git/ dest-dir [--git-dir=otherdir] [--user-agent=\"CustomUserAgent\"]\033[0m"
+if [ -z "$BASEURL" ]; then
+    echo -e "\033[33m[*] USAGE: http://target.tld/.git/ [dest-dir] [--git-dir=otherdir] [--user-agent=\"CustomUserAgent\"]\033[0m"
     echo -e "\t\t--git-dir=otherdir\t\tChange the git folder name. Default: .git"
     echo -e "\t\t--user-agent=\"CustomUserAgent\"\tCustomize the User-Agent. Default: \"$DEFAULT_USER_AGENT\""
     exit 1
@@ -116,11 +124,10 @@ function start_download() {
     QUEUE+=('/refs/wip/wtree/refs/heads/main')
 
     # Iterate through QUEUE until there are no more files to download
-    while [ ${#QUEUE[*]} -gt 0 ]
-    do
+    while [ ${#QUEUE[*]} -gt 0 ]; do
         download_item "${QUEUE[0]}"
         # Remove item from QUEUE
-        QUEUE=( "${QUEUE[@]:1}" )
+        QUEUE=("${QUEUE[@]:1}")
     done
 }
 
@@ -182,15 +189,13 @@ function download_item() {
 
     # Parse file for other objects
     hashes+=($(cat "$target" | strings -a | grep -oE "([a-f0-9]{40})"))
-    for hash in ${hashes[*]}
-    do
+    for hash in ${hashes[*]}; do
         QUEUE+=("objects/${hash:0:2}/${hash:2}")
     done
 
     # Parse file for packs
     packs+=($(cat "$target" | strings -a | grep -oE "(pack\-[a-f0-9]{40})"))
-    for pack in ${packs[*]}
-    do
+    for pack in ${packs[*]}; do
         QUEUE+=("objects/pack/$pack.pack")
         QUEUE+=("objects/pack/$pack.idx")
     done

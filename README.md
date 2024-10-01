@@ -40,7 +40,7 @@ optional arguments:
 ```
 
 The input file should contain the targets one per line.
-The script will output discovered domains in the form of ```[*] Found: DOMAIN``` to stdout.
+The script will output discovered domains in the form of `[*] Found: DOMAIN` to stdout.
 
 #### Scanning Alexa’s Top 1M
 
@@ -58,11 +58,33 @@ This tool can be used to download as much as possible from the found .git reposi
 ### Usage
 
 ```sh
-$ ./gitdumper.sh -h
+bash gitdumper.sh http://target.tld/.git/ dest-dir [--git-dir=otherdir] [--user-agent="CustomUserAgent"]
+```
 
-[*] USAGE: http://target.tld/.git/ dest-dir [--git-dir=otherdir]
-		--git-dir=otherdir		Change the git folder name. Default: .git
+### Options
+- `--git-dir=otherdir`
+  - Change the git folder name.
+  - **Default:** `.git`
 
+- `--user-agent="CustomUserAgent"`
+  - Customize the User-Agent for HTTP requests.
+  - **Default:** `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36`
+
+### Default Behavior
+If no `dest-dir` is provided, the script will create a `data` directory and within it a subdirectory named after the target domain.
+
+**Example:**
+
+```sh
+bash gitdumper.sh http://example.com/.git/
+```
+
+This will create the following structure:
+
+```
+data/
+└── example.com/
+└── .git/
 ```
 
 > **Note:** This tool has no 100% guarantee to completely recover the `.git` repository. Especially if the repository has been compressed into `pack`-files, it may fail.
@@ -80,16 +102,35 @@ This script tries to recover incomplete git repositories:
 ### Usage
 
 ```sh
-$ ./extractor.sh /tmp/mygitrepo /tmp/mygitrepodump
+./extractor.sh /path/to/gitrepo [dest-dir]
 ```
 
 Where:
 
-- `/tmp/mygitrepo` contains a `.git` directory
-- `/tmp/mygitrepodump` is the destination directory
+- `/path/to/gitrepo` contains a `.git` directory
+- `dest-dir` is the destination directory (optional)
 
-This can be used in combination with the `Git Dumper` in case the downloaded repository is incomplete.
+### Default Behavior
 
+If no dest-dir is provided, the script will create a data directory and within it a subdirectory named after the target domain.
+
+**Example:**
+
+```sh
+bash extractor.sh /path/to/gitrepo
+```
+
+This will create the following structure:
+
+```
+data/
+└── gitrepo_domain/
+    ├── 0-commit_hash/
+    ├── 1-commit_hash/
+    └── ...
+```
+
+> **Note:** This can be used in combination with the Git Dumper in case the downloaded repository is incomplete.
 
 ## Demo
 
