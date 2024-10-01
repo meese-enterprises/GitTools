@@ -65,7 +65,6 @@ bash gitdumper.sh http://target.tld/.git/ dest-dir [--git-dir=otherdir] [--user-
 - `--git-dir=otherdir`
   - Change the git folder name.
   - **Default:** `.git`
-
 - `--user-agent="CustomUserAgent"`
   - Customize the User-Agent for HTTP requests.
   - **Default:** `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36`
