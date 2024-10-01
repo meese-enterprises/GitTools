@@ -75,7 +75,7 @@ DOMAIN=$(echo "$BASEURL" | awk -F[/:] '{print $4}')
 
 # Set default BASEDIR if not provided
 if [[ -z "$BASEDIR" ]]; then
-    BASEDIR="$DOMAIN"
+    BASEDIR="data/$DOMAIN"
 fi
 
 GITDIR=$(get_git_dir "$@")

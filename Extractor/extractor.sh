@@ -27,12 +27,32 @@ fi
 GIT_DIR="$1"
 DEST_DIR="$2"
 
+# Remove trailing slash from GIT_DIR if present
+GIT_DIR="${GIT_DIR%/}"
+
 # Extract domain name from GIT_DIR path
-DOMAIN=$(basename "$(dirname "$GIT_DIR")")
+DOMAIN=$(basename "$GIT_DIR")
 
 # Set default DEST_DIR if not provided
 if [ -z "$DEST_DIR" ]; then
     DEST_DIR="data/$DOMAIN"
+fi
+
+# Current directory, as we'll switch into others and need to restore it
+OLDDIR=$(pwd)
+
+# Check if DEST_DIR is an absolute path; if not, prepend the current directory
+if [ "${DEST_DIR:0:1}" != "/" ]; then
+    TARGETDIR="$OLDDIR/$DEST_DIR"
+else
+    TARGETDIR="$DEST_DIR"
+fi
+
+# Ensure the DEST_DIR exists
+if [ ! -d "$TARGETDIR" ]; then
+    echo -e "\e[33m[*] Destination folder does not exist\e[0m"
+    echo -e "\e[32m[*] Creating $TARGETDIR\e[0m"
+    mkdir -p "$TARGETDIR"
 fi
 
 if [ ! -d "$GIT_DIR/.git" ]; then
