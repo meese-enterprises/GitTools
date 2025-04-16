@@ -72,27 +72,27 @@ function traverse_tree() {
     local path=$2
 
     # Read blobs/tree information from root tree
-    git ls-tree $tree |
+    git ls-tree "$tree" |
     while read leaf; do
-        type=$(echo $leaf | awk -F' ' '{print $2}') #grep -oP "^\d+\s+\K\w{4}");
-        hash=$(echo $leaf | awk -F' ' '{print $3}') #grep -oP "^\d+\s+\w{4}\s+\K\w{40}");
-        name=$(echo $leaf | awk '{$1=$2=$3=""; print substr($0,4)}') #grep -oP "^\d+\s+\w{4}\s+\w{40}\s+\K.*");
+        type=$(echo "$leaf" | awk -F' ' '{print $2}')
+        hash=$(echo "$leaf" | awk -F' ' '{print $3}')
+        name=$(echo "$leaf" | awk '{$1=$2=$3=""; print substr($0,4)}')
 
         # Get the blob data
         # Ignore invalid git objects (e.g. ones that are missing)
-        if ! git cat-file -e $hash; then
-            continue;
+        if ! git cat-file -e "$hash" 2>/dev/null; then
+            continue
         fi
 
         if [ "$type" = "blob" ]; then
             echo -e "\e[32m[+] Found file: $path/$name\e[0m"
             mkdir -p "$(dirname "$path/$name")"
-            git cat-file -p $hash > "$path/$name"
+            git cat-file -p "$hash" > "$path/$name"
         else
             echo -e "\e[32m[+] Found folder: $path/$name\e[0m"
             mkdir -p "$path/$name"
             # Recursively traverse sub trees
-            traverse_tree $hash "$path/$name"
+            traverse_tree "$hash" "$path/$name"
         fi
 
     done;
@@ -130,16 +130,22 @@ find ".git/objects" -type f |
     sed -e "s/\///g" |
     sed -e "s/\.gitobjects//g" |
     while read object; do
-        type=$(git cat-file -t $object)
+        echo -e "\e[32m[+] Extracting object: $object\e[0m"
+        type=$(git cat-file -t "$object")
 
         # Only analyze commit objects
         if [ "$type" = "commit" ]; then
             CURDIR=$(pwd)
-            traverse_commit "$TARGETDIR" $object $COMMITCOUNT
-            cd $CURDIR
+            traverse_commit "$TARGETDIR" "$object" $COMMITCOUNT
+            cd "$CURDIR"
 
             COMMITCOUNT=$((COMMITCOUNT + 1))
+            echo -e "\e[32m[+] Extracted commit: $COMMITCOUNT\e[0m"
+        else
+            echo -e "\e[31m[-] Invalid object type: $type\e[0m"
         fi
     done
 
-cd $OLDDIR
+cd "$OLDDIR"
+
+echo -e "\e[32mDone!\e[0m"
