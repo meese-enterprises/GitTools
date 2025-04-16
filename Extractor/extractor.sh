@@ -7,7 +7,7 @@ function init_header() {
 ###########
 # Extractor is part of https://github.com/meese-enterprises/GitTools
 #
-# Developed and maintained by @gehaxelt from @internetwache
+# Developed by @gehaxelt from @internetwache
 #
 # Use at your own risk. Usage might be illegal in certain circumstances.
 # Only for educational purposes!
