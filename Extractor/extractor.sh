@@ -30,6 +30,12 @@ DEST_DIR="$2"
 # Remove trailing slash from GIT_DIR if present
 GIT_DIR="${GIT_DIR%/}"
 
+# Check if GIT_DIR is a valid directory
+if [ ! -d "$GIT_DIR/.git" ]; then
+    echo -e "\e[31m[-] There's no .git folder\e[0m"
+    exit 1
+fi
+
 # Extract domain name from GIT_DIR path
 DOMAIN=$(basename "$GIT_DIR")
 
@@ -53,11 +59,6 @@ if [ ! -d "$TARGETDIR" ]; then
     echo -e "\e[33m[*] Destination folder does not exist\e[0m"
     echo -e "\e[32m[*] Creating $TARGETDIR\e[0m"
     mkdir -p "$TARGETDIR"
-fi
-
-if [ ! -d "$GIT_DIR/.git" ]; then
-    echo -e "\e[31m[-] There's no .git folder\e[0m"
-    exit 1
 fi
 
 if [ ! -d "$DEST_DIR" ]; then
